@@ -40,31 +40,30 @@ The dataset had a total of 2,304 missing values. I have imputed those values usi
 
 ## Preprocesing the data
 
-```{r loadingPackages, warning=FALSE, message=FALSE}
+
+```r
 #loading needed packages
 library(tidyr)
 library(dplyr)
 library(ggplot2)
 library(magrittr)
-
 ```
 
 Loading and preprocesing the data
 
-```{r, preproceso}
 
+```r
 actividad<-
         'd:/steps/data/activity.csv' %>%
         read.csv(header=TRUE) %>%
         tbl_df %>%
         mutate(date = as.Date(date))
-
 ```
 
 ## Calculating the mean of total steps taking per day
 
-```{r question1}
 
+```r
 # getting rid of NA's, calculting the total number of steps taken per day & mean
 actividadnNa<-
         actividad %>% na.omit(.) %>%
@@ -73,16 +72,23 @@ actividadnNa<-
         
 # histogram of total number of steps taken per day
 qplot(totalStepsTaken, data=actividadnNa, geom='histogram')
+```
 
+![plot of chunk question1](figure/question1-1.png) 
 
+```r
 # mean and median
 actividadnNa$totalStepsTaken %>% {c(mean(.), median(.))}
+```
 
+```
+## [1] 10766.19 10765.00
 ```
 
 ## Average daily activity pattern
 
-```{r question2}
+
+```r
 #Average daily activity pattern
 
 stepsAvg<- actividadnNa %>% 
@@ -91,12 +97,22 @@ stepsAvg<- actividadnNa %>%
 
 #interval with maximum number of steps
 stepsAvg[1,]
+```
 
+```
+## Source: local data frame [1 x 4]
+## 
+##         date totalStepsTaken avgSteps interval
+## 1 2012-11-23           21194 73.59028     2083
+```
+
+```r
 qplot(interval, avgSteps, data=stepsAvg, geom='line') + 
                 labs(x = '5-minutes interval', 
                      y= 'average numbers of steps')
-
 ```
+
+![plot of chunk question2](figure/question2-1.png) 
 
 3. Imputing missing values.
 To impute missing values, I goint to:
@@ -105,12 +121,18 @@ To impute missing values, I goint to:
 * use the computed mean where there is a NA or used the real mean otherwise, storing all thes values in a vector
 * create a new data frame where the above vector is the new 'steps' variable, adding 'date' and 'interval'
 
-```{r imputing}
 
+```r
 #number of NAs
 actividad %>%
         {sum(is.na(.))}
+```
 
+```
+## [1] 2304
+```
+
+```r
 # averaging by interval
 actividadImputed <-actividad %>%
         group_by(interval) %>%
@@ -128,17 +150,22 @@ nuevoImp<-nuevo %>%
         summarize(totalStepsTaken = sum(steps))
 
 qplot(totalStepsTaken, data= nuevoImp, geom='histogram')
+```
 
+![plot of chunk imputing](figure/imputing-1.png) 
 
+```r
 # mean and median
 nuevoImp$totalStepsTaken %>% {c(mean(.), median(.))}        
+```
 
-
+```
+## [1] 10765.64 10762.00
 ```
 
 ## Weekdays and weekend patterns
-```{r weekdays}
 
+```r
 # adding weekdays and weekend as factors
 nuevoWd <- nuevo %>%
         tbl_df() %>%
@@ -154,12 +181,21 @@ paraGrafico<-nuevoWd %>%
         mutate(stepsMean = signif(mean(steps)), 4) 
         
 table(paraGrafico$stepsMean)
+```
 
+```
+## 
+## 36.6875 41.9731 
+##   15264    2304
+```
+
+```r
 #using ggplot to directly calculate the mean
 ggplot(paraGrafico, aes(interval, steps)) +
         geom_line(stat='summary', fun.y=mean)+ 
         facet_wrap(~seguDia, ncol=1)
-
 ```
+
+![plot of chunk weekdays](figure/weekdays-1.png) 
 
 
