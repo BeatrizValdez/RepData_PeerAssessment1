@@ -1,7 +1,8 @@
+
 ---
 title: "Peer Assesment 1"
 author: "BeVa"
-date: "Wednesday, April 15, 2015"
+date: "Monday, May 01, 2015"
 output: html_document
 ---
 
@@ -30,7 +31,7 @@ The dataset had a total of 2,304 missing values. I have imputed those values usi
 
 ## Findings
 
-- The mean of the total number of steps taken per day is 10,766.19 and the median is 10,765.00. The maximum number of steps that have been taken, in average, in the 5-minutes interval is in the interval number 2083,  on November 23, 2012.
+- The mean of the total number of steps taken per day is 10,766.19 and the median is 10,765.00. The maximum number of steps that have been taken, in average, in the 5-minutes interval is in the interval number 835.
 - After imputing missing data, I have obtained a mean of 10,765.64 and a median of 10,762.00. These results are very closed to the values previously estimated. In the present activity, imputing data seems to have had  none impact on the estimates of the averages of total daily number of steps, despite the fact that the total daily number of steps have increased. 
 - Finally, the total number of steps taken increased on average during the weekend w.r.t the weekdays. On weekends the mean is 41.9, while during the week is 36.6. More free time, more steps taken.
 
@@ -52,13 +53,17 @@ library(magrittr)
 Loading and preprocesing the data
 
 
+
+
+
+
 ```r
-actividad<-
-        'd:/steps/data/activity.csv' %>%
+actividad<-  'd:/steps/data/activity.csv' %>%
         read.csv(header=TRUE) %>%
         tbl_df %>%
         mutate(date = as.Date(date))
 ```
+
 
 ## Calculating the mean of total steps taking per day
 
@@ -91,25 +96,27 @@ actividadnNa$totalStepsTaken %>% {c(mean(.), median(.))}
 ```r
 #Average daily activity pattern
 
-stepsAvg<- actividadnNa %>% 
-        mutate(interval = round(seq(0, 2355, length=53))) %>%
-        arrange(desc(avgSteps))
+
+stepsG <- actividad %>% na.omit() %>%
+        group_by(interval) %>%
+        summarize(steps = sum(steps)) %>%
+        arrange(desc(steps)) 
+      
 
 #interval with maximum number of steps
-stepsAvg[1,]
+stepsG[1,]
 ```
 
 ```
-## Source: local data frame [1 x 4]
+## Source: local data frame [1 x 2]
 ## 
-##         date totalStepsTaken avgSteps interval
-## 1 2012-11-23           21194 73.59028     2083
+##   interval steps
+## 1      835 10927
 ```
 
 ```r
-qplot(interval, avgSteps, data=stepsAvg, geom='line') + 
-                labs(x = '5-minutes interval', 
-                     y= 'average numbers of steps')
+ggplot(stepsG, aes(interval, steps)) +
+        geom_line(stat='summary', fun.y=mean)
 ```
 
 ![plot of chunk question2](figure/question2-1.png) 

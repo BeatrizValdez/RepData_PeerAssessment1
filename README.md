@@ -29,7 +29,7 @@ The dataset had a total of **2,304 missing values**. I have imputed those values
 
 ## Findings
 
-* The mean of the total number of steps taken per day is **10,766.19** and the median is **10,765.00**. The maximum number of steps that have been taken, in average, in the 5-minutes interval is in the **interval number 2083,  on November 23, 2012**.
+* The mean of the total number of steps taken per day is **10,766.19** and the median is **10,765.00**. The maximum number of steps that have been taken, in average, in the 5-minutes interval is in the **interval number 835 **.
 
 * After imputing missing data, I have obtained a mean of **10,765.64** and a median of **10,762.00**. These results are very closed to the values previously estimated. In the present activity, imputing data seems to have had  none impact on the estimates of the averages of total daily number of steps, despite the fact that the total daily number of steps have increased. 
 
